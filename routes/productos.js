@@ -1,6 +1,7 @@
 const {Router, request, response} = require('express');
-
 const router = Router();
+
+const { postProduct} = require('../controllers/productos');
 
 router.get('/:id', (req = request, res = response, next) => {
     
@@ -10,13 +11,7 @@ router.get('/:id', (req = request, res = response, next) => {
 
 });
 
-router.post('/', (req = request, res = response, next) => {
-    
-    res.json({
-        msg: '/api/productos',
-    });
-    
-});
+router.post('/', postProduct);
 
 router.put('/:id', (req = request, res = response, next) => {
     
