@@ -1,7 +1,7 @@
 const {Router, request, response} = require('express');
 const router = Router();
 
-const { postProduct} = require('../controllers/productos');
+const { postProduct } = require('../controllers/productos');
 
 router.get('/:id', (req = request, res = response, next) => {
     

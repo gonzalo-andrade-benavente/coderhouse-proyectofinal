@@ -7,6 +7,8 @@ const {router} = require('./routes/index');
 const routerProductos = require('./routes/productos');
 const routerCarrito = require('./routes/carrito');
 
+const { connectDB } = require('./services/productos');
+
 const PORT = process.env.PORT || 8080;
 //console.log(process.env.PATH_PRODUCTOS, process.env.PATH_CARRITO);
 

@@ -3,14 +3,18 @@ const { v4: uuidv4 } = require('uuid');
 
 const Producto = require('../models/Producto');
 
-const postProduct = (req = request, res = response, next) => {
+const { saveProduct } = require('../services/productos');
+
+const postProduct = async (req = request, res = response, next) => {
+    
     const { nombre, descripcion, codigo, foto, precio, stock } = req.body;
     
     const producto = new Producto(uuidv4(), nombre, descripcion, codigo, foto, precio, stock);
 
+    const id = await saveProduct(producto);
+
     res.json({
-        msg: '/api/productos',
-        producto
+        id
     });
 }
 
