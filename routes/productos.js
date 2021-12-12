@@ -1,17 +1,12 @@
 const {Router, request, response} = require('express');
 const router = Router();
 
-const { postProduct } = require('../controllers/productos');
+const { postProduct,getProduct } = require('../controllers/productos');
+const validaRol  = require('../middlewares/validaRol');
 
-router.get('/:id', (req = request, res = response, next) => {
-    
-    res.json({
-        msg: '/api/productos/:id',
-    });
+router.get('/:id', getProduct);
 
-});
-
-router.post('/', postProduct);
+router.post('/', [ validaRol ], postProduct);
 
 router.put('/:id', (req = request, res = response, next) => {
     

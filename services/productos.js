@@ -21,7 +21,15 @@ const saveProduct = async (product) => {
     return product.id;
 }
 
+const findProductById = async (id) => {
+    await connectDB();
+    const product = products.find(prd => prd.id === id); //be8c11dd-3bc3-43b7-91c2-cf43a3c15757
+    return product;
+
+}
+
 module.exports = {
-    saveProduct
-    , connectDB
+    connectDB
+    , findProductById
+    , saveProduct
 }

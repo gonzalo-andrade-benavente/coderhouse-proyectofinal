@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const Producto = require('../models/Producto');
 
-const { saveProduct } = require('../services/productos');
+const { saveProduct, findProductById } = require('../services/productos');
 
 const postProduct = async (req = request, res = response, next) => {
     
@@ -18,6 +18,23 @@ const postProduct = async (req = request, res = response, next) => {
     });
 }
 
+const getProduct = async (req = request, res = response, next) => {
+
+    const { id } = req.params;
+
+    const product = await findProductById(id);
+
+    if (product === undefined) {
+        return res.status(404).json({
+            error: -1,
+            descripcion: `El producto con ${id} no existe.`
+        })
+    }
+    
+    res.json(product);
+}
+
 module.exports = {
     postProduct
+    , getProduct
 }
