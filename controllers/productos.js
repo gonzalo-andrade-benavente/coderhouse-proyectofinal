@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const Producto = require('../models/Producto');
 
-const { saveProduct, findProductById } = require('../services/productos');
+const { deleteProductById, findProductById, saveProduct, updateProductById } = require('../services/productos');
 
 const postProduct = async (req = request, res = response, next) => {
     
@@ -18,11 +18,40 @@ const postProduct = async (req = request, res = response, next) => {
     });
 }
 
-const getProduct = async (req = request, res = response, next) => {
+const getProduct = (req = request, res = response, next) => {
 
     const { id } = req.params;
 
-    const product = await findProductById(id);
+    const product = findProductById(id);
+
+    if (product === undefined) {
+        return res.status(404).json({
+            error: -1,
+            descripcion: `El producto con ${id} no existe.`
+        })
+    }
+    
+    res.json(product);
+}
+
+const putProduct = async (req = request, res = response, next) => {
+    const { id } = req.params;
+    const { nombre, descripcion, codigo, foto, precio, stock } = req.body;
+    const product = await updateProductById(id, { nombre, descripcion, codigo, foto, precio, stock });
+
+    if (product === undefined) {
+        return res.status(404).json({
+            error: -1,
+            descripcion: `El producto con ${id} no existe.`
+        })
+    }
+    
+    res.json(product);
+}
+
+const deleteProduct = async (req = request, res = response, next) => {
+    const { id } = req.params;
+    const product = await deleteProductById(id);
 
     if (product === undefined) {
         return res.status(404).json({
@@ -35,6 +64,8 @@ const getProduct = async (req = request, res = response, next) => {
 }
 
 module.exports = {
-    postProduct
+    deleteProduct
     , getProduct
+    , postProduct
+    , putProduct
 }

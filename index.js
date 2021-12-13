@@ -1,16 +1,20 @@
 require('dotenv').config();
-
 const express = require('express');
-
-const app = express();
-const {router} = require('./routes/index');
+const { connectDB } = require('./services/productos');
+const { router } = require('./routes/index');
 const routerProductos = require('./routes/productos');
 const routerCarrito = require('./routes/carrito');
 
-const { connectDB } = require('./services/productos');
 
+const app = express();
 const PORT = process.env.PORT || 8080;
+
 //console.log(process.env.PATH_PRODUCTOS, process.env.PATH_CARRITO);
+const connDB = async () => {
+    await connectDB();
+}
+
+connDB();
 
 // Middlewares
 app.use(express.json());
@@ -25,6 +29,8 @@ app.use('/api/carrito', routerCarrito);
 const server = app.listen(PORT, () => {
     console.log(`Server listening in port ${PORT}`);
 });
+
+
 
 module.exports = server;
 

@@ -8,6 +8,7 @@ class Producto {
         this.foto = foto;
         this.precio = precio;
         this.stock = stock;
+        this.borrado = false;
     }
 }
 

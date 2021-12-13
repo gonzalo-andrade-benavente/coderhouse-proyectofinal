@@ -1,28 +1,17 @@
-const {Router, request, response} = require('express');
-const router = Router();
+const { Router } = require('express');
 
-const { postProduct,getProduct } = require('../controllers/productos');
+const { getProduct, deleteProduct, postProduct, putProduct  } = require('../controllers/productos');
+
 const validaRol  = require('../middlewares/validaRol');
+
+const router = Router();
 
 router.get('/:id', getProduct);
 
 router.post('/', [ validaRol ], postProduct);
 
-router.put('/:id', (req = request, res = response, next) => {
-    
-    res.json({
-        msg: '/api/productos/:id',
-    });
-    
-});
+router.put('/:id', [ validaRol ], putProduct);
 
-router.delete('/:id', (req = request, res = response, next) => {
-    
-    res.json({
-        msg: '/api/productos/:id',
-    });
-    
-});
-
+router.delete('/:id', [ validaRol ], deleteProduct);
 
 module.exports = router;
