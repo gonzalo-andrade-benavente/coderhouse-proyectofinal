@@ -1,15 +1,11 @@
-const {Router, request, response} = require('express');
-const { v4: uuidv4 } = require('uuid');
-
+const { Router } = require('express');
 const router = Router();
 
-router.post('/', (req = request, res = response, next) => {
-    
-    res.json({
-        msg: '/api/carrito',
-    });
-    
-});
+const { postCarrito, postCarritoProducto } = require('../controllers/carrito');
+
+router.post('/', postCarrito);
+
+router.post('/:id/productos', postCarritoProducto);
 
 router.delete('/:id', (req = request, res = response, next) => {
     

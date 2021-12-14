@@ -1,1 +1,29 @@
-[]
+[
+  {
+    "id": "c05d8bb2-9d58-44e8-bbe9-0a4ed513223f",
+    "timestamp": 1639440318509,
+    "productos": []
+  },
+  {
+    "id": "56b0bcfd-f7b2-4cc0-ad86-a25768e28cff",
+    "timestamp": 1639440320612,
+    "productos": []
+  },
+  {
+    "id": "120b3176-45de-4f69-af66-28aed5018f03",
+    "timestamp": 1639440354999,
+    "productos": [
+      {
+        "id": "25f91624-7cf3-439e-bb27-19ba00123701",
+        "timestamp": 1639440382720,
+        "nombre": "Producto actualizadooooooo",
+        "descripcion": "Producto 1 de prueba por Postman",
+        "codigo": "PRD1",
+        "foto": "https://cdn3.iconfinder.com/data/icons/education-209/64/apple-fruit-science-school-256.png",
+        "precio": 1200,
+        "stock": 10,
+        "borrado": false
+      }
+    ]
+  }
+]

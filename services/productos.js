@@ -1,4 +1,3 @@
-const { log } = require('console');
 const fs = require('fs');
 const products = [];
 
@@ -14,6 +13,7 @@ const connectDB = async () => {
         console.log('[error service.connectFIle method]', err);
     }
 }
+
 const saveProduct = async (product) => {
     //await connectDB();
     products.push(product);

@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const { connectDB } = require('./services/productos');
+const { connectDBCart } = require('./services/carrito');
 const { router } = require('./routes/index');
 const routerProductos = require('./routes/productos');
 const routerCarrito = require('./routes/carrito');
@@ -12,6 +13,7 @@ const PORT = process.env.PORT || 8080;
 //console.log(process.env.PATH_PRODUCTOS, process.env.PATH_CARRITO);
 const connDB = async () => {
     await connectDB();
+    await connectDBCart();
 }
 
 connDB();
