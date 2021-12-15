@@ -1,5 +1,5 @@
 const {request, response} = require('express');
-const { addProductCart, createEmptyCart, deleteCartById ,getProductsById } = require('../services/carrito');
+const { addProductCart, createEmptyCart, deleteCartById ,getProductsById, deleteCartProductById } = require('../services/carrito');
 
 
 const postCarrito = async (req = request, res = response, next) => {
@@ -54,9 +54,32 @@ const deleteCarritoById = async (req = request, res = response, next) => {
     res.send({id});
 }
 
+const deleteCarritoProductoById = async (req = request, res = response, next) => {
+    
+    const { id, id_prod } = req.params;
+    
+    const product = await deleteCartProductById(id, id_prod);
+
+    console.log(product);
+
+    if (product.borrado === false) {
+        return res.status(404).json({
+            error: -1,
+            descripcion: `El carrito ${id} y/o el producto ${id_prod} no existen.`
+        });
+    }
+
+    res.send({
+        id,
+        id_prod,
+    });
+
+}
+
 module.exports = {
     getCarritoProductos
     , deleteCarritoById
+    , deleteCarritoProductoById
     , postCarrito
     , postCarritoProducto
 

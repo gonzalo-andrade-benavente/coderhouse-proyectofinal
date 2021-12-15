@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 
-const { getCarritoProductos, postCarrito, postCarritoProducto, deleteCarritoById } = require('../controllers/carrito');
+const { getCarritoProductos, postCarrito, postCarritoProducto, deleteCarritoById, deleteCarritoProductoById} = require('../controllers/carrito');
 
 router.post('/', postCarrito);
 
@@ -11,13 +11,6 @@ router.get('/:id/productos', getCarritoProductos);
 
 router.delete('/:id', deleteCarritoById);
 
-router.delete('/:id/productos/:id_prod', (req = request, res = response, next) => {
-    
-    res.json({
-        msg: '/api/carrito/:id/productos/:id_prod',
-    });
-    
-});
-
+router.delete('/:id/productos/:id_prod', deleteCarritoProductoById);
 
 module.exports = router;

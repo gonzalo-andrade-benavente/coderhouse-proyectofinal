@@ -61,10 +61,32 @@ const deleteCartById = async (id) => {
     return indexCart;
 }
 
+const deleteCartProductById = async (id, id_prod) => {
+    let indexCart = -1;
+    const product = {
+        id_prod,
+        borrado: false
+    }
+
+    if (carritos.length > 0) {
+        indexCart = carritos.findIndex(cart => cart.id === id);
+    }
+
+    if (indexCart > -1) {
+        const tmpProducts = carritos[indexCart].productos.filter(prd => prd.id !== id_prod);
+        carritos[indexCart].productos = tmpProducts;
+        product.borrado = true;
+        await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2)); 
+    }
+
+    return product;
+}
+
 module.exports = {
     addProductCart
     , connectDBCart
     , createEmptyCart
     , getProductsById
     , deleteCartById
+    , deleteCartProductById
 }

@@ -36,5 +36,22 @@
         "borrado": false
       }
     ]
+  },
+  {
+    "id": "f24c5bf0-19aa-4ce4-8b82-885ca0c1185d",
+    "timestamp": 1639593195709,
+    "productos": [
+      {
+        "id": "71042b34-a7f2-4ef1-8e9a-abfcad4e5d77",
+        "timestamp": 1639354655637,
+        "nombre": "Producto 1 put",
+        "descripcion": "Producto 1 de prueba por Postman",
+        "codigo": "PRD1",
+        "foto": "https://cdn3.iconfinder.com/data/icons/education-209/64/apple-fruit-science-school-256.png",
+        "precio": 1200,
+        "stock": 10,
+        "borrado": false
+      }
+    ]
   }
 ]
