@@ -41,7 +41,24 @@ const addProductCart = async (id, id_prod) => {
 
 const getProductsById = (id) => {
     const carrito = carritos.find( cart => cart.id === id);
+    if (carrito === undefined) {
+        return undefined;
+    }
     return carrito.productos;
+}
+
+const deleteCartById = async (id) => {
+    let indexCart = -1;
+
+    if (carritos.length > 0) {
+        indexCart = carritos.findIndex(cart => cart.id === id);
+    }
+
+    if (indexCart > -1) {
+        carritos[indexCart].id = '-1';
+        await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2));  
+    }
+    return indexCart;
 }
 
 module.exports = {
@@ -49,4 +66,5 @@ module.exports = {
     , connectDBCart
     , createEmptyCart
     , getProductsById
+    , deleteCartById
 }
