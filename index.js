@@ -28,7 +28,6 @@ app.use('/api', router);
 app.use('/api/productos', routerProductos);
 app.use('/api/carrito', routerCarrito);
 
-/*
 app.get('/*', (req, res) => {
     res.json({
         error: -2,
@@ -36,7 +35,6 @@ app.get('/*', (req, res) => {
     });
 });
 
-*/
 
 const server = app.listen(PORT, () => {
     console.log(`Server listening in port ${PORT}`);
