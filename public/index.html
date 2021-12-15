@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Front primera entrega proyecto final coderhouse</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script type="text/javascript" src="/socket.io/socket.io.js"></script>
+
+
+</head>
+
+<body onload="init()">
+
+    <div class="container">
+        <h1>MyProducts</h1>
+        <form action="" method="post" id="my-form">
+            <div class="form-group">
+                <label for="titleInput">Título del producto</label>
+                <input type="text" class="form-control" id="titleInput" name="titleInput"
+                    placeholder="Título del producto">
+            </div>
+            <div class="form-group">
+                <label for="priceInput">Precio del producto</label>
+                <input type="text" class="form-control" id="priceInput" name="priceInput"
+                    placeholder="Precio del producto">
+            </div>
+            <div class="form-group">
+                <label for="thumbnailInput">Thumbnail del producto</label>
+                <input type="text" class="form-control" id="thumbnailInput" name="thumbnailInput"
+                    placeholder="Thumbnail del producto"
+                    value="https://cdn3.iconfinder.com/data/icons/education-209/64/book-note-paper-school-128.png">
+                <a href="https://www.iconfinder.com/iconsets/education-209" target="blank"> + url fotos</a>
+            </div>
+            <button type="submit" class="btn btn-primary">Añadir producto</button>
+        </form>
+
+        <br /> <br />
+
+        <table class="table" id="my-table">
+            <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Nombre</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Thumbnail</th>
+                </tr>
+            </thead>
+            <tbody>
+
+
+            </tbody>
+        </table>
+
+        <h1>MyChat</h1>
+
+        <form action="" method="post" id="my-chat">
+            <div class="form-group">
+                <input type="text" class="form-control" id="userInput" name="userInput"
+                    placeholder="Ingrese su correo como usario para empezar el chat">
+            </div>
+        </form>
+
+        <form action="" method="post" id="my-message" style="display: none;">
+
+            <table class="table" id="my-table-message">
+                <thead>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+
+            <div class="form-group">
+                <input type="text" class="form-control" id="messageInput" name="messageInput"
+                    placeholder="Escriba su mensaje">
+                <button type="submit" class="btn btn-primary">Enviar</button>
+            </div>
+
+        </form>
+
+
+
+
+    </div>
+
+
+    <script>
+        const myForm = document.getElementById("my-form");
+        const myChat = document.getElementById("my-chat");
+        const myMessage = document.getElementById("my-message");
+        const table = document.querySelector("#my-table tbody");
+        const tableMessages = document.getElementById("my-table-message");
+        const socket = io();
+        const submitForm = (event) => {
+            event.preventDefault();
+            const product = {
+                title: document.getElementById('titleInput').value,
+                price: document.getElementById('priceInput').value,
+                thumbnail: document.getElementById('thumbnailInput').value,
+                //id: (productos.length + 1),
+                id: 1,
+                delete: false,
+            }
+            socket.emit("addProduct", product);
+        }
+        const loginForm = (event) => {
+            event.preventDefault();
+            const user = {
+                email: document.getElementById('userInput').value,
+            }
+            socket.emit("addUser", user);
+            document.getElementById("my-message").style.display = 'inline';
+        }
+        const submitMessage = (event) => {
+            event.preventDefault();
+            const myTime = new Date(); 
+            const message = {
+                user: document.getElementById('userInput').value,
+                time: myTime,
+                msg: document.getElementById('messageInput').value,
+            }
+            socket.emit("addMessage", message);
+            document.getElementById('userInput').value = "";
+        }
+        function init() {
+            myForm.addEventListener('submit', submitForm);
+            myChat.addEventListener('submit', loginForm);
+            myMessage.addEventListener('submit', submitMessage);
+            //socket = io({transports: ['websocket'], upgrade: false});
+            socket.on("init", data => {
+                //productos = data;
+                drawTable(data);
+            });
+            socket.on("listenserver", data => {
+                //drawTable(data);
+                console.log(data);
+                drawTable(data);
+            });
+            socket.on("listenServerMessages", data => {
+                //drawTable(data);
+                console.log(data);
+                drawTableMessages(data);
+            });
+        }
+        function drawTable(products) {
+            table.innerHTML = '';
+            if (products.length !== 0) {
+                //document.getElementById("zero-products").parentElement.remove();
+                products.forEach(product => {
+                    table.innerHTML = table.innerHTML + `<th scope="row">1</th><td>${product.title}</td><td>${product.price}</td><td><img width="30" height="30" src="${product.thumbnail}"/></td>`;
+                });
+            } else {
+                table.innerHTML = `<td id="zero-products" colspan="4">No hay productos</td>` + table.innerHTML;
+            }
+        }
+        function drawTableMessages(messages) {
+           tableMessages.innerHTML = "";
+           messages.forEach(msg => {
+                    let dateSplit = msg.time.split("T");
+                    let yearFormat = dateSplit[0][8] + dateSplit[0][9] + '-' + dateSplit[0][5] + dateSplit[0][6] + '-' + dateSplit[0][0] + dateSplit[0][1] + dateSplit[0][2] + dateSplit[0][3];
+                    let timeFormat = dateSplit[1][0] + dateSplit[1][1] + ":" + dateSplit[1][3] + dateSplit[1][4] + ":" + dateSplit[1][6] + dateSplit[1][7] ;
+                    let finalFormat = `${yearFormat} ${timeFormat}`;
+                    tableMessages.innerHTML = tableMessages.innerHTML + `<th scope="row" style="color:blue">${msg.user}</th><td style="color:brown">${finalFormat}</td><td style="color:green">${msg.msg}</td>`;
+                });
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+
+
+</body>
+
+</html>

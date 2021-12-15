@@ -26,6 +26,10 @@ const findProductById = (id) => {
     return product;
 }
 
+const findAllProducts = () => {
+    return products.filter(prd => prd.borrado === false);
+}
+
 const updateProductById = async (id, prd) => {
     const indexProduct = products.findIndex(prd => prd.id === id && (!prd.borrado));
     let product;
@@ -57,6 +61,7 @@ module.exports = {
     connectDB
     , deleteProductById
     , findProductById
+    , findAllProducts
     , updateProductById
     , saveProduct
 }

@@ -6,7 +6,7 @@ const validaRol  = require('../middlewares/validaRol');
 
 const router = Router();
 
-router.get('/:id', getProduct);
+router.get('/:id?', getProduct);
 
 router.post('/', [ validaRol ], postProduct);
 

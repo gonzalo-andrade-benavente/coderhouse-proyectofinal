@@ -21,12 +21,22 @@ connDB();
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-//app.use(express.static("./public"));
+app.use(express.static(__dirname + "/public"));
 
 // Routes
 app.use('/api', router);
 app.use('/api/productos', routerProductos);
 app.use('/api/carrito', routerCarrito);
+
+/*
+app.get('/*', (req, res) => {
+    res.json({
+        error: -2,
+        descripcion: 'ruta incorrecta'
+    });
+});
+
+*/
 
 const server = app.listen(PORT, () => {
     console.log(`Server listening in port ${PORT}`);
