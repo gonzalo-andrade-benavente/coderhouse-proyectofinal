@@ -1,5 +1,5 @@
 const {request, response} = require('express');
-const { addProductCart, createEmptyCart } = require('../services/carrito');
+const { addProductCart, createEmptyCart, getProductsById } = require('../services/carrito');
 
 
 const postCarrito = async (req = request, res = response, next) => {
@@ -28,7 +28,14 @@ const postCarritoProducto = async (req = request, res = response, next) => {
     res.send(carrito);
 }
 
+const getCarritoProductos = (req = request, res = response, next) => {
+    const { id } = req.params;
+    const productos = getProductsById(id);
+    res.send(productos);
+}
+
 module.exports = {
-    postCarrito
-    ,  postCarritoProducto
+    getCarritoProductos
+    , postCarrito
+    , postCarritoProducto
 }

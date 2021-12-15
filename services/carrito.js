@@ -39,8 +39,14 @@ const addProductCart = async (id, id_prod) => {
 
 }
 
+const getProductsById = (id) => {
+    const carrito = carritos.find( cart => cart.id === id);
+    return carrito.productos;
+}
+
 module.exports = {
     addProductCart
     , connectDBCart
     , createEmptyCart
+    , getProductsById
 }

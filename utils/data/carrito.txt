@@ -23,6 +23,17 @@
         "precio": 1200,
         "stock": 10,
         "borrado": false
+      },
+      {
+        "id": "25f91624-7cf3-439e-bb27-19ba00123701",
+        "timestamp": 1639440382720,
+        "nombre": "Producto actualizadooooooo",
+        "descripcion": "Producto 1 de prueba por Postman",
+        "codigo": "PRD1",
+        "foto": "https://cdn3.iconfinder.com/data/icons/education-209/64/apple-fruit-science-school-256.png",
+        "precio": 1200,
+        "stock": 10,
+        "borrado": false
       }
     ]
   }
