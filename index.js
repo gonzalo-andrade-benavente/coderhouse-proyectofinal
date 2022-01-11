@@ -1,14 +1,17 @@
 require('dotenv').config();
 const express = require('express');
+
+const { config } = require('./config');
 const { connectDB } = require('./services/productos');
 const { connectDBCart } = require('./services/carrito');
+
 const { router } = require('./routes/index');
 const routerProductos = require('./routes/productos');
 const routerCarrito = require('./routes/carrito');
 
-
 const app = express();
-const PORT = process.env.PORT || 8080;
+const { connection } = require('./config/databaseMongoDB');
+const PORT = config.port;
 
 //console.log(process.env.PATH_PRODUCTOS, process.env.PATH_CARRITO);
 const connDB = async () => {

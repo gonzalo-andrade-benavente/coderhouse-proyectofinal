@@ -3,7 +3,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const Producto = require('../models/Producto');
 
-const { deleteProductById, findProductById, saveProduct, updateProductById, findAllProducts } = require('../services/productos');
+const { deleteProductById, findProductById, saveProduct, updateProductById } = require('../services/productos');
 
 const postProduct = async (req = request, res = response, next) => {
     
@@ -18,16 +18,15 @@ const postProduct = async (req = request, res = response, next) => {
     });
 }
 
-const getProduct = (req = request, res = response, next) => {
+const getProduct = async (req = request, res = response, next) => {
 
     const { id } = req.params;
 
     let respuesta;
 
     if ( id !== undefined ) {
-        const product = findProductById(id);
-
-        if (product === undefined) {
+        const product = await findProductById(id);
+        if (product === null) {
             return res.status(404).json({
                 error: -1,
                 descripcion: `El producto con ${id} no existe.`
@@ -36,7 +35,7 @@ const getProduct = (req = request, res = response, next) => {
 
         respuesta = product;
     } else {
-        respuesta = findAllProducts();
+        respuesta = await findProductById();
     }
 
     
@@ -49,7 +48,7 @@ const putProduct = async (req = request, res = response, next) => {
     const { nombre, descripcion, codigo, foto, precio, stock } = req.body;
     const product = await updateProductById(id, { nombre, descripcion, codigo, foto, precio, stock });
 
-    if (product === undefined) {
+    if (product === null) {
         return res.status(404).json({
             error: -1,
             descripcion: `El producto con ${id} no existe.`
@@ -63,7 +62,7 @@ const deleteProduct = async (req = request, res = response, next) => {
     const { id } = req.params;
     const product = await deleteProductById(id);
 
-    if (product === undefined) {
+    if (product === null) {
         return res.status(404).json({
             error: -1,
             descripcion: `El producto con ${id} no existe.`
