@@ -40,13 +40,18 @@ const findProductById = async (id) => {
     const product = products.find(prd => prd.id === id && (!prd.borrado) ); //be8c11dd-3bc3-43b7-91c2-cf43a3c15757
     return product;
     */
-    let prd;
+    let prd, countPrd;
     try {
         if (id !== undefined ) {
             prd = await ProductosModel.findById(id); 
         } else {
             //prd = await ProductosModel.find({ borrado: false });
             prd = await ProductosModel.find({});
+            countPrd = await ProductosModel.countDocuments({});
+            prd = {
+                total: countPrd,
+                products: prd
+            }
         }
         
     } catch (err) {
