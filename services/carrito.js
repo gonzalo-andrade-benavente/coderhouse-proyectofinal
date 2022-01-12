@@ -1,6 +1,7 @@
 const fs = require('fs');
-const Carrito = require("../models/Carrito");
 const { findProductById } = require('../services/productos');
+
+const { CarritoModel } = require('../models/Carrito');
 
 const pathFile = process.env.PATH_CARRITO;
 const carritos = [];
@@ -17,14 +18,29 @@ const connectDBCart = async () => {
 }
 
 const createEmptyCart = async () => {
+    /*
     const carrito = new Carrito();
     carritos.push(carrito);
     await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2));  
     return carrito;
+    */
+    let cart;
+
+    try {
+        cart = await CarritoModel.create({
+            timestamp: Date.now()
+        });
+    } catch (err) {
+        console.log(err);
+    }
+
+    return cart;
+
 }
 
 const addProductCart = async (id, id_prod) => {
 
+    /*
     const indexCart = carritos.findIndex(cart => cart.id === id);
     let carrito;
 
@@ -36,6 +52,28 @@ const addProductCart = async (id, id_prod) => {
     }
 
     return carrito;
+    */
+    let cart;
+    let prd;
+
+    try {
+
+        cart = await CarritoModel.findById(id);
+
+        if (cart !== null) {
+            prd = await findProductById(id_prod);
+            // Controlar si el producto existe o no.
+            cart = await CarritoModel.findById(id);
+            cart.productos = [...cart.productos, prd];
+            //cart.productos.push(prd);
+            await cart.save();
+        }
+
+    } catch(err) {
+        console.log(err);
+    }
+
+    return cart;
 
 }
 

@@ -1,3 +1,4 @@
+/*
 const { v4: uuidv4 } = require('uuid');
 
 class Carrito {
@@ -9,3 +10,16 @@ class Carrito {
 }
 
 module.exports = Carrito;
+*/
+
+const { Schema, model } = require('mongoose');
+
+const { carritoSchema } = require('./schemas/carritos');
+
+const CarritoSchema = new Schema(carritoSchema);
+
+const CarritoModel = new model('Carritos', CarritoSchema);
+
+module.exports = {
+    CarritoModel
+}

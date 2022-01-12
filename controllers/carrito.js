@@ -6,9 +6,12 @@ const postCarrito = async (req = request, res = response, next) => {
     
     const carrito = await createEmptyCart();
     
+    /*
     res.send({ 
         id: carrito.id 
     });
+    */
+    res.send(carrito);
 }
 
 const postCarritoProducto = async (req = request, res = response, next) => {
