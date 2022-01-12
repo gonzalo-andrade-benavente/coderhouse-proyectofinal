@@ -77,12 +77,24 @@ const addProductCart = async (id, id_prod) => {
 
 }
 
-const getProductsById = (id) => {
+const getProductsById = async (id) => {
+    
+    /*
     const carrito = carritos.find( cart => cart.id === id);
     if (carrito === undefined) {
         return undefined;
     }
     return carrito.productos;
+    */
+    let cart;
+
+    try {
+        cart = await CarritoModel.findById(id);
+    } catch(err) {
+        console.log(err);
+    }
+
+    return cart.productos;
 }
 
 const deleteCartById = async (id) => {
