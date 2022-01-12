@@ -1,10 +1,10 @@
 const fs = require('fs');
-const { findProductById } = require('../services/productos');
 
-const { CarritoModel } = require('../models/Carrito');
-
-const pathFile = process.env.PATH_CARRITO;
 const carritos = [];
+const { CarritoModel } = require('../models/Carrito');
+const { config } = require('../config/index');
+const { findProductById } = require('../services/productos');
+const pathFile = process.env.PATH_CARRITO;
 
 const connectDBCart = async () => {
     try {
