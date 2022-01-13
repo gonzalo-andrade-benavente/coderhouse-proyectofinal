@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { v4: uuidv4 } = require('uuid');
 
 const carritos = [];
 const { CarritoModel } = require('../models/Carrito');
@@ -18,21 +19,31 @@ const connectDBCart = async () => {
 }
 
 const createEmptyCart = async () => {
-    /*
-    const carrito = new Carrito();
-    carritos.push(carrito);
-    await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2));  
-    return carrito;
-    */
+
     let cart;
 
-    try {
-        cart = await CarritoModel.create({
-            timestamp: Date.now()
-        });
-    } catch (err) {
-        console.log(err);
-    }
+    if (config.database === 'FILESYSTEM') {
+
+        cart = {
+            id: uuidv4(), 
+            timestamp: Date.now(),
+            productos: []
+        };
+
+        carritos.push(cart);
+        await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2));  
+
+    } else if (config.database === 'MONGO') {
+
+        try {
+            cart = await CarritoModel.create({
+                timestamp: Date.now()
+            });
+        } catch (err) {
+            console.log(err);
+        }
+
+    } 
 
     return cart;
 
@@ -53,25 +64,40 @@ const addProductCart = async (id, id_prod) => {
 
     return carrito;
     */
-    let cart;
-    let prd;
+    let cart, prd, indexCart;
+    
+    if (config.database === 'FILESYSTEM') {
 
-    try {
-
-        cart = await CarritoModel.findById(id);
-
-        if (cart !== null) {
-            prd = await findProductById(id_prod);
-            // Controlar si el producto existe o no.
-            cart = await CarritoModel.findById(id);
-            cart.productos = [...cart.productos, prd];
-            //cart.productos.push(prd);
-            await cart.save();
+        indexCart = carritos.findIndex(cart => cart.id === id);
+        
+        if (indexCart > -1) {
+            const producto = await findProductById(id_prod);
+            carritos[indexCart].productos.push(producto);
+            cart = carritos[indexCart];
+            await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2));  
         }
 
-    } catch(err) {
-        console.log(err);
+
+    } else if (config.database === 'MONGO') {
+        try {
+
+            cart = await CarritoModel.findById(id);
+    
+            if (cart !== null) {
+                prd = await findProductById(id_prod);
+                // Controlar si el producto existe o no.
+                cart = await CarritoModel.findById(id);
+                cart.productos = [...cart.productos, prd];
+                //cart.productos.push(prd);
+                await cart.save();
+            }
+    
+        } catch(err) {
+            console.log(err);
+        }
     }
+
+   
 
     return cart;
 
@@ -88,10 +114,25 @@ const getProductsById = async (id) => {
     */
     let cart;
 
-    try {
-        cart = await CarritoModel.findById(id);
-    } catch(err) {
-        console.log(err);
+    if (config.database === 'FILESYSTEM') {
+
+        cart = carritos.find( cart => cart.id === id);
+
+
+    } else if (config.database === 'MONGO') {
+        
+        try {
+            cart = await CarritoModel.findById(id);
+        } catch(err) {
+            console.log(err);
+        }
+    
+    }
+
+    if ( cart === undefined) {
+        cart = {
+            productos: undefined,
+        }
     }
 
     return cart.productos;
@@ -100,34 +141,55 @@ const getProductsById = async (id) => {
 const deleteCartById = async (id) => {
     let indexCart = -1;
 
-    if (carritos.length > 0) {
-        indexCart = carritos.findIndex(cart => cart.id === id);
+    if (config.database === 'FILESYSTEM') {
+
+        if (carritos.length > 0) {
+            indexCart = carritos.findIndex(cart => cart.id === id);
+        }
+    
+        if (indexCart > -1) {
+            carritos[indexCart].id = '-1';
+            await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2));  
+        }
+
+    } else if (config.database === 'MONG') {
+        indexCart = -1;
     }
 
-    if (indexCart > -1) {
-        carritos[indexCart].id = '-1';
-        await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2));  
-    }
+    
     return indexCart;
 }
 
 const deleteCartProductById = async (id, id_prod) => {
+    
     let indexCart = -1;
-    const product = {
-        id_prod,
-        borrado: false
+
+    let product;
+
+    if (config.database === 'FILESYSTEM') {
+
+        product = {
+            id_prod,
+            borrado: false
+        }
+    
+        if (carritos.length > 0) {
+            indexCart = carritos.findIndex(cart => cart.id === id);
+        }
+    
+        if (indexCart > -1) {
+            const tmpProducts = carritos[indexCart].productos.filter(prd => prd.id !== id_prod);
+            carritos[indexCart].productos = tmpProducts;
+            product.borrado = true;
+            await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2)); 
+        }
+
+    } else if (config.database === 'MONGO') {
+        
+        product = null;
+
     }
 
-    if (carritos.length > 0) {
-        indexCart = carritos.findIndex(cart => cart.id === id);
-    }
-
-    if (indexCart > -1) {
-        const tmpProducts = carritos[indexCart].productos.filter(prd => prd.id !== id_prod);
-        carritos[indexCart].productos = tmpProducts;
-        product.borrado = true;
-        await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2)); 
-    }
 
     return product;
 }

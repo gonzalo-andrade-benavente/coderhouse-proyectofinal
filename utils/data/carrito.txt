@@ -1,1 +1,31 @@
-[]
+[
+  {
+    "id": "3da8a224-c780-4a18-9302-96df33112bb4",
+    "timestamp": 1642034955091,
+    "productos": []
+  },
+  {
+    "id": "1d596c62-e9cc-45d6-a65b-5c3724c55b60",
+    "timestamp": 1642039173157,
+    "productos": [
+      {},
+      {},
+      {
+        "id": "fb05f22e-33c5-4f0b-b2da-95e23e89005c",
+        "timestamp": 1642032490790,
+        "nombre": "Producto 1",
+        "descripcion": "Producto para borrarn",
+        "codigo": "PRD1",
+        "foto": "https://cdn3.iconfinder.com/data/icons/education-209/64/apple-fruit-science-school-256.png",
+        "precio": 1200,
+        "stock": 10,
+        "borrado": false
+      }
+    ]
+  },
+  {
+    "id": "-1",
+    "timestamp": 1642039672511,
+    "productos": []
+  }
+]
