@@ -1,9 +1,9 @@
 [
   {
-    "id": "71042b34-a7f2-4ef1-8e9a-abfcad4e5d77",
-    "timestamp": 1639354655637,
-    "nombre": "Producto 1 put",
-    "descripcion": "Producto 1 de prueba por Postman",
+    "id": "fb05f22e-33c5-4f0b-b2da-95e23e89005c",
+    "timestamp": 1642032490790,
+    "nombre": "Producto 1",
+    "descripcion": "Producto para borrarn",
     "codigo": "PRD1",
     "foto": "https://cdn3.iconfinder.com/data/icons/education-209/64/apple-fruit-science-school-256.png",
     "precio": 1200,
@@ -11,21 +11,10 @@
     "borrado": false
   },
   {
-    "id": "776cbdb0-c58d-45bc-a27c-6a5334b7980e",
-    "timestamp": 1639358243497,
-    "nombre": "Producto 2 put",
-    "descripcion": "Producto 1 de prueba por Postman",
-    "codigo": "PRD1",
-    "foto": "https://cdn3.iconfinder.com/data/icons/education-209/64/apple-fruit-science-school-256.png",
-    "precio": 1200,
-    "stock": 10,
-    "borrado": true
-  },
-  {
-    "id": "25f91624-7cf3-439e-bb27-19ba00123701",
-    "timestamp": 1639440382720,
-    "nombre": "Producto actualizadooooooo",
-    "descripcion": "Producto 1 de prueba por Postman",
+    "id": "f8657ee7-115e-4f2c-a60c-286c8f47a43e",
+    "timestamp": 1642032791363,
+    "nombre": "Producto 1",
+    "descripcion": "Producto para borrarn",
     "codigo": "PRD1",
     "foto": "https://cdn3.iconfinder.com/data/icons/education-209/64/apple-fruit-science-school-256.png",
     "precio": 1200,
