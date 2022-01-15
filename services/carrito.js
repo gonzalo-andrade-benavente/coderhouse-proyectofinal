@@ -133,7 +133,9 @@ const getProductsById = async (id) => {
     
     }
 
-    if ( cart === undefined) {
+    console.log(cart);
+
+    if ( ( cart === undefined) || (cart === null) ) {
         cart = {
             productos: undefined,
         }
@@ -157,7 +159,12 @@ const deleteCartById = async (id) => {
         }
 
     } else if (config.database === 'MONGO') {
-        indexCart = -1;
+        try {
+            await CarritoModel.findByIdAndDelete(id);
+            indexCart = 1;
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     
