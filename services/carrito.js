@@ -156,7 +156,7 @@ const deleteCartById = async (id) => {
             await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2));  
         }
 
-    } else if (config.database === 'MONG') {
+    } else if (config.database === 'MONGO') {
         indexCart = -1;
     }
 
@@ -168,14 +168,15 @@ const deleteCartProductById = async (id, id_prod) => {
     
     let indexCart = -1;
 
-    let product;
+    let product, products;
+
+    product = {
+        id_prod,
+        borrado: false
+    }
 
     if (config.database === 'FILESYSTEM') {
 
-        product = {
-            id_prod,
-            borrado: false
-        }
     
         if (carritos.length > 0) {
             indexCart = carritos.findIndex(cart => cart.id === id);
@@ -190,7 +191,16 @@ const deleteCartProductById = async (id, id_prod) => {
 
     } else if (config.database === 'MONGO') {
         
-        product = null;
+        try {
+            cart = await CarritoModel.findById(id);
+            products = cart.productos.filter(prd => prd._id.toString() !== id_prod);
+            cart.productos = products;
+            await cart.save();
+            product.borrado = true;
+
+        } catch(err) {
+            console.log(err);
+        }
 
     }
 
