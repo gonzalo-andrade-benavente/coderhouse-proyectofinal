@@ -6,6 +6,7 @@ let products = [];
 const { ProductosModel } = require('../models/Productos');
 
 const instanceFirestore = require('../config/databaseFirestore');
+const { productosSchema } = require('../models/schemas/productos');
 const databaseFirestore = instanceFirestore.instance;
 
 
@@ -63,7 +64,8 @@ const saveProduct = async (product) => {
 
 const findProductById = async (id) => {
 
-    let prd, countPrd;
+    let prd, countPrd, prd2;
+    let productosAux = [];
 
     if (config.database === 'FILESYSTEM') {
 
@@ -73,7 +75,7 @@ const findProductById = async (id) => {
             countPrd = products.length;
             prd = {
                 total: countPrd,
-                prd: products
+                productos: products
             }
         }
         
@@ -89,7 +91,7 @@ const findProductById = async (id) => {
                 countPrd = await ProductosModel.countDocuments({});
                 prd = {
                     total: countPrd,
-                    products: prd
+                    productos: prd
                 }
             }
             
@@ -101,12 +103,28 @@ const findProductById = async (id) => {
         try {
 
             if (id !== undefined) {
-                console.log(id);
+                prd = await databaseFirestore.collection('productos').doc(id).get();
+
+                newPrd = prd.data();
+                newPrd.id = prd.id;
+
+                prd = newPrd;
+            
             } else {
                 prd = await databaseFirestore.collection('productos').get();
+                countPrd = 0;
                 prd.forEach(elem => {
-                    console.log(elem.data());
+                    newPrd = elem.data();
+                    newPrd.id = elem.id;
+                    productosAux = [...productosAux, newPrd];
+                    countPrd++;
                 });
+
+                prd = {
+                    total: countPrd,
+                    productos: productosAux
+                }
+                
             }
 
 
