@@ -85,12 +85,17 @@ const addProductCart = async (id, id_prod) => {
     
             if (cart !== null) {
                 prd = await findProductById(id_prod);
-                // Controlar si el producto existe o no.
-                cart = await CarritoModel.findById(id);
-                cart.productos = [...cart.productos, prd];
-                //cart.productos.push(prd);
-                await cart.save();
+                if (prd !== undefined) {
+                    // Controlar si el producto existe o no.
+                    cart = await CarritoModel.findById(id);
+                    cart.productos = [...cart.productos, prd];
+                    //cart.productos.push(prd);
+                    await cart.save();
+                } else {
+                    cart = undefined;
+                }
             }
+                
     
         } catch(err) {
             console.log(err);
@@ -98,7 +103,6 @@ const addProductCart = async (id, id_prod) => {
     }
 
    
-
     return cart;
 
 }

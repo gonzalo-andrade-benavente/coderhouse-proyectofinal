@@ -24,7 +24,7 @@ const postCarritoProducto = async (req = request, res = response, next) => {
     if (carrito === undefined) {
         return res.status(404).json({
             error: -1,
-            descripcion: `El carrito con ${id} no existe.`
+            descripcion: `El carrito con ${id} o el producto ${id_prod} no existe.`
         })
     }
 

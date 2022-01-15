@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const morgan = require('morgan');
 
 const { config } = require('./config');
 const { connectDB } = require('./services/productos');
@@ -15,6 +16,7 @@ require('./config/databaseFilesystem');
 const PORT = config.port;
 
 // Middlewares
+app.use(morgan('tiny'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));

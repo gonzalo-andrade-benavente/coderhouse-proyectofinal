@@ -27,7 +27,7 @@ const saveProduct = async (product) => {
         await fs.promises.writeFile(pathFile, JSON.stringify(products, null, 2)); 
         id = product.id; 
     
-    } else if (config.database === 'MONG') {
+    } else if (config.database === 'MONGO') {
 
         try {
             const prd = await ProductosModel.create(product);
@@ -59,7 +59,7 @@ const findProductById = async (id) => {
         }
         
 
-    } else if (config.database === 'MONG') {
+    } else if (config.database === 'MONGO') {
 
         try {
             if (id !== undefined ) {
@@ -106,7 +106,7 @@ const updateProductById = async (id, prd) => {
 
         prdUpd = product;
 
-    } else if (config.database === 'MONG') {
+    } else if (config.database === 'MONGO') {
         try {
 
             prdUpd = await ProductosModel.findByIdAndUpdate(id, prd, { new: true});
@@ -144,7 +144,7 @@ const deleteProductById = async (id) => {
             await fs.promises.writeFile(pathFile, JSON.stringify(products, null, 2));
         }
 
-    } else if (config.database === 'MONG') {
+    } else if (config.database === 'MONGO') {
         try {
             prd = await ProductosModel.findByIdAndDelete(id);
         } catch (err) {
