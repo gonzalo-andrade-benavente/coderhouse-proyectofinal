@@ -141,7 +141,7 @@ const findProductById = async (id) => {
 
 const updateProductById = async (id, prd) => {
  
-    let prdUpd, product, indexProduct;
+    let prdUpd, product, indexProduct, prdAux;
 
     if (config.database === 'FILESYSTEM') {
 
@@ -162,6 +162,7 @@ const updateProductById = async (id, prd) => {
         prdUpd = product;
 
     } else if (config.database === 'MONGO') {
+        
         try {
 
             prdUpd = await ProductosModel.findByIdAndUpdate(id, prd, { new: true});
@@ -169,9 +170,34 @@ const updateProductById = async (id, prd) => {
         } catch (err) {
             console.log(err);
         }
-    }
+    } else if (config.database === 'FIREBASE') {
 
-    
+        try {
+            prdUpd = await databaseFirestore.collection('productos').doc(id);
+
+            prdAux = await prdUpd.get();
+
+            await prdUpd.update({
+                nombre: prd.nombre !== undefined ? prd.nombre : prdAux.data().nombre,
+                descripcion: prd.descripcion !== undefined ? prd.descripcion : prdAux.data().descripcion,
+                codigo: prd.codigo !== undefined ? prd.codigo : prdAux.data().codigo,
+                foto: prd.foto !== undefined ? prd.foto : prdAux.data().foto,
+                precio: prd.precio !== undefined ? prd.precio : prdAux.data().precio,
+                stock: prd.stock !== undefined ? prd.stock : prdAux.data().stock
+            });
+
+            prdUpd = await databaseFirestore.collection('productos').doc(id).get();
+
+            prdAux = prdUpd.data();
+            prdAux.id = prdUpd.id;
+            prdUpd = prdAux;
+
+
+        } catch(err) {
+            console.log(err);
+        }     
+
+    }
 
     return prdUpd;
 }
