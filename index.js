@@ -3,8 +3,6 @@ const express = require('express');
 const morgan = require('morgan');
 
 const { config } = require('./config');
-const { connectDB } = require('./services/productos');
-const { connectDBCart } = require('./services/carrito');
 
 const { router } = require('./routes/index');
 const routerProductos = require('./routes/productos');

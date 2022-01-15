@@ -5,6 +5,9 @@ const pathFile = process.env.PATH_PRODUCTOS;
 let products = [];
 const { ProductosModel } = require('../models/Productos');
 
+const instanceFirestore = require('../config/databaseFirestore');
+const databaseFirestore = instanceFirestore.instance;
+
 
 const connectDB = async () => {
     try {
@@ -36,6 +39,22 @@ const saveProduct = async (product) => {
             console.log(err);
         }
     
+    } else if (config.database === 'FIREBASE') {
+
+        const productosDoc = databaseFirestore.collection('productos').doc();
+        
+        await productosDoc.set({
+            timestamp: product.timestamp,
+            nombre: product.nombre,
+            descripcion: product.descripcion,
+            codigo: product.codigo,
+            foto: product.foto,
+            precio: product.precio,
+            stock: product.stock
+        });
+
+        id = productosDoc.id;
+
     }
 
 
@@ -77,6 +96,24 @@ const findProductById = async (id) => {
         } catch (err) {
            console.log(err);
         }
+    } else if (config.database === 'FIREBASE') {
+
+        try {
+
+            if (id !== undefined) {
+                console.log(id);
+            } else {
+                prd = await databaseFirestore.collection('productos').get();
+                prd.forEach(elem => {
+                    console.log(elem.data());
+                });
+            }
+
+
+        } catch (err) {
+            console.log(err);
+        }
+
     }
 
 
