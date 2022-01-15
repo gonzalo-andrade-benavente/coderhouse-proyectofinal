@@ -16,7 +16,10 @@ require('./config/databaseFilesystem');
 const PORT = config.port;
 
 // Middlewares
-app.use(morgan('tiny'));
+if ( config.dev !== 'production' ) {
+    app.use(morgan('tiny'));
+}
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname + "/public"));
