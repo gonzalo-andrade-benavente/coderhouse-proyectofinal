@@ -38,9 +38,10 @@ const getProduct = async (req = request, res = response, next) => {
         respuesta = await findProductById();
     }
 
-    
-    
-    res.json(respuesta);
+    res.json({
+        error: 0,
+        product: respuesta
+    });
 }
 
 const putProduct = async (req = request, res = response, next) => {
@@ -69,7 +70,10 @@ const deleteProduct = async (req = request, res = response, next) => {
         })
     }
     
-    res.json(product);
+    res.json({
+        error: 0,
+        descripcion: `El producto con ${id} fue borrado exitosamente.`
+    });
 }
 
 module.exports = {

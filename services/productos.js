@@ -64,7 +64,7 @@ const saveProduct = async (product) => {
 
 const findProductById = async (id) => {
 
-    let prd, countPrd, prd2;
+    let prd, countPrd;
     let productosAux = [];
 
     if (config.database === 'FILESYSTEM') {
@@ -103,12 +103,16 @@ const findProductById = async (id) => {
         try {
 
             if (id !== undefined) {
-                prd = await databaseFirestore.collection('productos').doc(id).get();
-
-                newPrd = prd.data();
-                newPrd.id = prd.id;
-
-                prd = newPrd;
+                
+                try {
+                    prd = await databaseFirestore.collection('productos').doc(id).get();
+                    newPrd = prd.data();
+                    newPrd.id = prd.id;
+    
+                    prd = newPrd;
+                } catch(err) {
+                    prd = null;
+                }
             
             } else {
                 prd = await databaseFirestore.collection('productos').get();
@@ -203,33 +207,42 @@ const updateProductById = async (id, prd) => {
 }
 
 const deleteProductById = async (id) => {
-    /*
-    const indexProduct = products.findIndex(prd => prd.id === id && (!prd.borrado));
-    if (indexProduct !== -1) {
-        products[indexProduct].borrado = true;
-        await fs.promises.writeFile(pathFile, JSON.stringify(products, null, 2));
-    }
-    return products[indexProduct];
-    */
-    let prd, indexProduct, productsAux;
+
+    let prd, indexProduct;
 
     if (config.database === 'FILESYSTEM') {
         
         indexProduct = products.findIndex(prd => prd.id === id );
 
         if (indexProduct !== -1) {
-            prd = products[indexProduct]; 
             //products[indexProduct].borrado = true;
-            products = products.filter(prd => prd.id !== id );
-            
+            products = products.filter(prd => prd.id !== id );        
             await fs.promises.writeFile(pathFile, JSON.stringify(products, null, 2));
+        } else {
+            prd =  null;
         }
 
     } else if (config.database === 'MONGO') {
         try {
-            prd = await ProductosModel.findByIdAndDelete(id);
+            await ProductosModel.findByIdAndDelete(id);
         } catch (err) {
             console.log(err);
+            prd =  null;
+        }
+    } else if (config.database === 'FIREBASE') { 
+
+        try {
+            prd = await databaseFirestore.collection('productos').doc(id);
+            
+            if (prd.id !== undefined) {
+                await databaseFirestore.collection('productos').doc(id).delete();    
+            } else {
+                prd = null;
+            }
+
+        } catch(err) {
+            console.log(err);
+            prd =  null;
         }
     }
 
