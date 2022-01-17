@@ -38,10 +38,13 @@ const getProduct = async (req = request, res = response, next) => {
         respuesta = await findProductById();
     }
 
+    /*
     res.json({
         error: 0,
         product: respuesta
     });
+    */
+   res.json(respuesta);
 }
 
 const putProduct = async (req = request, res = response, next) => {

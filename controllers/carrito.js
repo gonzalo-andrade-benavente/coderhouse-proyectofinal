@@ -54,7 +54,10 @@ const deleteCarritoById = async (req = request, res = response, next) => {
             descripcion: `El carrito con ${id} no existe.`
         });
     }
-    res.send({id});
+    res.send({
+        error: 0,
+        descripcion: `El carrito con ${id} fue borrado existosamente.`
+    });
 }
 
 const deleteCarritoProductoById = async (req = request, res = response, next) => {

@@ -4,6 +4,11 @@ const { v4: uuidv4 } = require('uuid');
 const carritos = [];
 const { CarritoModel } = require('../models/Carrito');
 const { config } = require('../config/index');
+
+const COLLECTION = 'carritos';
+const instanceFirestore = require('../config/databaseFirestore');
+const databaseFirestore = instanceFirestore.instance;
+
 const { findProductById } = require('../services/productos');
 const pathFile = process.env.PATH_CARRITO;
 
@@ -43,7 +48,27 @@ const createEmptyCart = async () => {
             console.log(err);
         }
 
-    } 
+    } else if (config.database === 'FIREBASE') { 
+     
+        try {
+
+            const carritoDoc = databaseFirestore.collection(COLLECTION).doc();
+            
+            cart = {
+                timestamp: Date.now(),
+                products: []
+            }
+
+            await carritoDoc.set(cart);
+
+            cart.id = carritoDoc.id
+
+        } catch (err) {
+            console.log(err);
+        }
+        
+
+    }
 
     return cart;
 
@@ -51,20 +76,7 @@ const createEmptyCart = async () => {
 
 const addProductCart = async (id, id_prod) => {
 
-    /*
-    const indexCart = carritos.findIndex(cart => cart.id === id);
-    let carrito;
-
-    if (indexCart > -1) {
-        const producto = findProductById(id_prod);
-        carritos[indexCart].productos.push(producto);
-        carrito = carritos[indexCart];
-        await fs.promises.writeFile(pathFile, JSON.stringify(carritos, null, 2));  
-    }
-
-    return carrito;
-    */
-    let cart, prd, indexCart;
+    let cart, prd, indexCart, productosAux, timestamp;
     
     if (config.database === 'FILESYSTEM') {
 
@@ -100,6 +112,50 @@ const addProductCart = async (id, id_prod) => {
         } catch(err) {
             console.log(err);
         }
+    } else if (config.database === 'FIREBASE') { 
+
+        try {
+
+            cart = await databaseFirestore.collection(COLLECTION).doc(id).get();
+
+            if (cart.data() !== undefined) {
+
+                prd = await findProductById(id_prod);
+                
+                if (prd !== null) {
+                    productosAux  = cart.data().productos;
+                    timestamp = cart.data().timestamp;
+
+                    if (productosAux === undefined) {
+                        productosAux = [];
+                        productosAux.push(prd);
+                    } else {
+                        productosAux.push(prd);
+                    }
+
+                    await databaseFirestore.collection(COLLECTION)
+                                            .doc(id)
+                                            .set({
+                                                productos: productosAux,
+                                                timestamp
+                                            });
+
+                    cart = cart.data();
+                    cart.id = id;
+                } else {
+                    cart = undefined;
+                }
+
+            } else {
+                cart = undefined;
+            }
+
+        } catch(err) {
+            console.log(err);
+            cart = undefined;
+        }
+        
+
     }
 
    
@@ -109,13 +165,6 @@ const addProductCart = async (id, id_prod) => {
 
 const getProductsById = async (id) => {
     
-    /*
-    const carrito = carritos.find( cart => cart.id === id);
-    if (carrito === undefined) {
-        return undefined;
-    }
-    return carrito.productos;
-    */
     let cart;
 
     if (config.database === 'FILESYSTEM') {
@@ -131,9 +180,20 @@ const getProductsById = async (id) => {
             console.log(err);
         }
     
-    }
+    } else if (config.database === 'FIREBASE') { 
+        try {
+            cart = await databaseFirestore.collection(COLLECTION).doc(id).get();
 
-    console.log(cart);
+            if (cart.data() !== undefined) { 
+                cart = cart.data();
+            } else {
+                cart = undefined;
+            }
+
+        } catch(err) {
+            console.log(err);
+        }
+    }
 
     if ( ( cart === undefined) || (cart === null) ) {
         cart = {
@@ -145,6 +205,7 @@ const getProductsById = async (id) => {
 }
 
 const deleteCartById = async (id) => {
+    
     let indexCart = -1;
 
     if (config.database === 'FILESYSTEM') {
@@ -165,9 +226,23 @@ const deleteCartById = async (id) => {
         } catch (err) {
             console.log(err);
         }
+    } else if (config.database === 'FIREBASE') { 
+        let cart;
+
+        try {
+            cart = await databaseFirestore.collection(COLLECTION).doc(id);
+            if (cart.id !== undefined) {
+                databaseFirestore.collection(COLLECTION).doc(id).delete(); 
+                indexCart = 1;
+            } else {
+                indexCart = -1;
+            }
+        }catch(err) {
+            console.log(err);
+            indexCart = -1;
+        }
     }
 
-    
     return indexCart;
 }
 
@@ -209,6 +284,47 @@ const deleteCartProductById = async (id, id_prod) => {
             console.log(err);
         }
 
+    } else if (config.database === 'FIREBASE') { 
+        
+        try {
+
+            cart = await databaseFirestore.collection(COLLECTION).doc(id).get();
+
+            if (cart.data() !== undefined) {
+
+                prd = await findProductById(id_prod);
+
+                if (prd !== null) {
+                    productosAux  = cart.data().productos;
+                    timestamp = cart.data().timestamp;
+
+                    if (productosAux === undefined) {
+                        cart = undefined;
+                    } else {
+                        productosAux = productosAux.filter(prd => prd.id !== id_prod);
+                    }
+
+                    await databaseFirestore.collection(COLLECTION)
+                                            .doc(id)
+                                            .set({
+                                                productos: productosAux,
+                                                timestamp
+                                            });
+
+                    product = prd;
+                } else {
+                    cart = undefined;
+                }
+
+            } else {
+                cart = undefined;
+            }
+
+        } catch(err) {
+            console.log(err);
+            cart = undefined;
+        }
+        
     }
 
 

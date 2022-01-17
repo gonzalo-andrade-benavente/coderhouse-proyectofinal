@@ -28,3 +28,13 @@ MONGODB_PASSWORD=C0d3rhOuse <br/>
 MONGODB_HOST=som.mongodb.cluster <br/>
 MONGODB_DATABASE=C0d3rhOuse <br/>
 
+## Posibles FIX
+<ul>
+    <li>
+        Considerar añadir al carrito solo el ID del producto con un campo cantidad y precio, esto se considera <br/>
+        debido a que los datos del producto pueden cambiar y que se mantendría un solo registro.
+    </li>
+    <li>
+        Restructuración según contenedores.
+    </li>
+</ul>
